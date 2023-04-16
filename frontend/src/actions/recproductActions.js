@@ -12,7 +12,7 @@ export const listRecProducts =
       dispatch({ type: REC_PRODUCT_LIST_REQUEST });
         
       const { data } = await axios.get(
-        `/api/recproducts?userInfo=${userInfo.json()}`
+        `/api/recproduct?userInfo=${userInfo.json()}`
       );
 
       dispatch({

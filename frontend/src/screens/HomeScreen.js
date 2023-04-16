@@ -44,31 +44,34 @@ const HomeScreen = ({ match }) => {
         </Link>
       )}
       {userInfo ? (
-        <h1>Recommended Products</h1>
+        <>
+          <h1>Recommended Products</h1>
+          {rloading ? (
+            <Loader />
+          ) : rerror ? (
+            <Message variant="danger">{rerror}</Message>
+          ) : (
+            <>
+              <Row>
+                {recproducts ? (
+                  recproducts.map((recproduct) => (
+                    <Col key={recproduct._id} sm={12} md={6} lg={4} xl={3}>
+                      <Product product={recproduct} />
+                    </Col>
+                  ))
+                ) : (
+                  <Message>No recommended products yet</Message>
+                )}
+              </Row>
+            </>
+          )}
+        </>
       ) : (
         <Message>
           Please <Link to="/login">sign in</Link> to View Recommended Products{" "}
         </Message>
       )}
-      {rloading ? (
-        <Loader />
-      ) : rerror ? (
-        <Message variant="danger">{rerror}</Message>
-      ) : (
-        <>
-          <Row>
-            {recproducts ? (
-              recproducts.map((recproduct) => (
-                <Col key={recproduct._id} sm={12} md={6} lg={4} xl={3}>
-                  <Product product={recproduct} />
-                </Col>
-              ))
-            ) : (
-              <Message>No recommended products yet</Message>
-            )}
-          </Row>
-        </>
-      )}
+
       <h1>Our Products</h1>
       {loading ? (
         <Loader />
