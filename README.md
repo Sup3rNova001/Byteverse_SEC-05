@@ -8,8 +8,8 @@
 #### `How to run locally?`
 
 ```bash
-git clone https://github.com/Sup3rNova001/Byteverse_SEC#05
-cd Byteverse_SEC#05
+gh repo clone Sup3rNova001/Byteverse_SEC-05
+cd Byteverse_SEC-05
 npm install
 cd frontend
 npm install
