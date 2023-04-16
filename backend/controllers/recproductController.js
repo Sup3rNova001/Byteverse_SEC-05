@@ -7,23 +7,35 @@ import User from "../models/userModel.js";
 // @route   GET /api/recproducts
 // @access  Public
 
-const getRecProducts = asyncHandler(async (req, res) => {
-//   const pageSize = 10;
-//   const page = Number(req.query.pageNumber) || 1;
+export const getRecProducts = asyncHandler(async (req, res) => {
+  const { email, password } = req.query.userInfo || {
+    email: "amandalal56386@gmail.com",
+    password: "aman123",
+  };
 
-//   const keyword = req.query.keyword
-//     ? {
-//         name: {
-//           $regex: req.query.keyword,
-//           $options: "i",
-//         },
-//       }
-//     : {};
+  let products = [];
+  const user = await User.findOne({ email });
+  // console.log(user);
+  if (user) {
+    const orders = await Order.find({ user });
+    // console.log(orders);
+    async function getProd(orderitem) {
+      let pro = await Product.find({ name: orderitem.name });
+      return pro;
+    }
+    orders
+      ? orders.forEach(async (order) => {
+          let orderitems = order.orderItems;
+          // console.log(orderitems);
+          orderitems
+            ? orderitems.forEach((orderitem) =>
+                getProd(orderitem).then((pro) => products.push(pro))
+              )
+            : console.log("No products");
+        })
+      : console.log("no products bought");
 
-//   const count = await Product.countDocuments({ ...keyword });
-//   const products = await Product.find({ ...keyword })
-//     .limit(pageSize)
-//     .skip(pageSize * (page - 1));
-
-//   res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    console.log("products------", products);
+  }
+  res.json({ products });
 });

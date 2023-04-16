@@ -9,6 +9,7 @@ import Paginate from "../components/Paginate";
 import ProductCarousel from "../components/ProductCarousel";
 import Meta from "../components/Meta";
 import { listProducts } from "../actions/productActions";
+import { listRecProducts } from "../actions/recproductActions";
 
 const HomeScreen = ({ match }) => {
   const keyword = match.params.keyword;
@@ -20,10 +21,18 @@ const HomeScreen = ({ match }) => {
   const productList = useSelector((state) => state.productList);
   const { loading, error, products, page, pages } = productList;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const recproductList = useSelector((state) => state.recproductList);
+  const { rloading, rerror, recproducts } = recproductList;
+
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
   }, [dispatch, keyword, pageNumber]);
-
+  useEffect(() => {
+    dispatch(listRecProducts(userInfo));
+  }, [dispatch, userInfo]);
   return (
     <>
       <Meta />
@@ -34,7 +43,33 @@ const HomeScreen = ({ match }) => {
           Go Back
         </Link>
       )}
-      <h1>Latest Products</h1>
+      {userInfo ? (
+        <h1>Recommended Products</h1>
+      ) : (
+        <Message>
+          Please <Link to="/login">sign in</Link> to View Recommended Products{" "}
+        </Message>
+      )}
+      {rloading ? (
+        <Loader />
+      ) : rerror ? (
+        <Message variant="danger">{rerror}</Message>
+      ) : (
+        <>
+          <Row>
+            {recproducts ? (
+              recproducts.map((recproduct) => (
+                <Col key={recproduct._id} sm={12} md={6} lg={4} xl={3}>
+                  <Product product={recproduct} />
+                </Col>
+              ))
+            ) : (
+              <Message>No recommended products yet</Message>
+            )}
+          </Row>
+        </>
+      )}
+      <h1>Our Products</h1>
       {loading ? (
         <Loader />
       ) : error ? (
